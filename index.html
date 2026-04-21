@@ -6,104 +6,284 @@
 <title>省中医工作站 · 管理后台</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{--green:#006B3F;--green2:#00875A;--green3:rgba(0,107,63,.08);--red:#C41230;--red2:#FF3B30;--orange:#FF9500;--blue:#007AFF;--purple:#AF52DE;--bg:#F2F2F7;--card:#FFFFFF;--card2:#F9F9F9;--text:#1C1C1E;--text2:#8E8E93;--text3:#AEAEB2;--border:rgba(0,0,0,.06);--shadow:0 1px 8px rgba(0,0,0,.04);--radius:16px;--radius2:12px;--radius3:8px;--safe-top:env(safe-area-inset-top,20px);--safe-bottom:env(safe-area-inset-bottom,0px)}
-body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:calc(var(--safe-bottom) + 20px)}
-.header{background:var(--green);color:#fff;padding:calc(var(--safe-top) + 16px) 20px 20px;position:sticky;top:0;z-index:100}
-.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
-.header h1{font-size:20px;font-weight:800}
-.header-badge{font-size:11px;background:rgba(255,255,255,.2);padding:3px 10px;border-radius:20px;font-weight:600}
-.header-sub{font-size:13px;opacity:.8}
-.container{padding:16px}
-.card{background:var(--card);border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
-.card-title{font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.stat-item{background:var(--card2);border-radius:var(--radius2);padding:14px;text-align:center}
-.stat-value{font-size:28px;font-weight:800;line-height:1.2}
-.stat-label{font-size:12px;color:var(--text2);margin-top:4px}
-.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
-table{width:100%;border-collapse:collapse;font-size:13px}
-th{text-align:left;padding:10px 8px;font-weight:700;color:var(--text2);font-size:11px;text-transform:uppercase;border-bottom:2px solid var(--border);white-space:nowrap}
-td{padding:10px 8px;border-bottom:1px solid var(--border);white-space:nowrap}
-tr:last-child td{border-bottom:none}
-.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600}
-.badge-green{background:var(--green3);color:var(--green)}
-.badge-purple{background:rgba(175,82,222,.1);color:var(--purple)}
-.badge-blue{background:rgba(0,122,255,.1);color:var(--blue)}
-.badge-gray{background:var(--card2);color:var(--text3)}
-.user-card{display:flex;align-items:center;gap:12px;padding:12px;border-radius:var(--radius2);background:var(--card2);margin-bottom:8px;cursor:pointer;transition:background .2s}
-.user-card:active{background:var(--border)}
-.user-avatar{width:40px;height:40px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700}
-.user-info{flex:1}
-.user-name{font-size:15px;font-weight:700}
-.user-meta{font-size:12px;color:var(--text2)}
-.user-stats{text-align:right}
-.user-count{font-size:16px;font-weight:800;color:var(--green)}
-.user-income{font-size:11px;color:var(--text2)}
-.login-page{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+:root{
+  --green:#006B3F;--green-light:#E8F5EE;--green-dark:#004D2E;
+  --red:#DC2626;--red-light:#FEF2F2;
+  --orange:#EA580C;--orange-light:#FFF7ED;
+  --blue:#2563EB;--blue-light:#EFF6FF;
+  --purple:#7C3AED;--purple-light:#F5F3FF;
+  --gray-50:#F9FAFB;--gray-100:#F3F4F6;--gray-200:#E5E7EB;
+  --gray-300:#D1D5DB;--gray-400:#9CA3AF;--gray-500:#6B7280;
+  --gray-600:#4B5563;--gray-700:#374151;--gray-800:#1F2937;--gray-900:#111827;
+  --bg:#F3F4F6;--card:#FFFFFF;--text:#111827;--text2:#6B7280;--text3:#9CA3AF;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.05);--shadow:0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.06);
+  --shadow-md:0 4px 6px rgba(0,0,0,.07),0 2px 4px rgba(0,0,0,.06);
+  --shadow-lg:0 10px 15px rgba(0,0,0,.1),0 4px 6px rgba(0,0,0,.05);
+  --radius:12px;--radius-lg:16px;
+  --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue','PingFang SC',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* ===== Login ===== */
+.login-page{position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#006B3F 0%,#00875A 50%,#00A86B 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
 .login-page.hide{display:none}
-.login-logo{width:64px;height:64px;border-radius:16px;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:16px}
-.login-title{font-size:22px;font-weight:800;margin-bottom:4px}
-.login-sub{font-size:13px;color:var(--text2);margin-bottom:24px;text-align:center}
-.login-form{width:100%;max-width:300px}
-.login-input{width:100%;padding:14px 16px;border-radius:var(--radius2);border:2px solid var(--border);background:var(--card);color:var(--text);font-size:16px;font-weight:500;outline:none;transition:border-color .2s;box-sizing:border-box;margin-bottom:10px}
-.login-input:focus{border-color:var(--green)}
-.login-btn{width:100%;padding:14px;border-radius:var(--radius2);border:none;background:var(--green);color:#fff;font-size:16px;font-weight:700;cursor:pointer}
-.login-btn:active{opacity:.7}
-.login-error{color:var(--red2);font-size:13px;text-align:center;margin-top:8px;min-height:20px}
-.back-btn{display:inline-flex;align-items:center;gap:4px;font-size:13px;color:var(--blue);cursor:pointer;margin-bottom:12px;font-weight:600}
-.empty{text-align:center;padding:40px 20px;color:var(--text2)}
-.empty-icon{font-size:48px;margin-bottom:12px}
-.loading{text-align:center;padding:40px;color:var(--text2)}
-.loading::after{content:'';display:inline-block;width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin .6s linear infinite;margin-left:8px;vertical-align:middle}
+.login-card{background:#fff;border-radius:20px;padding:40px 32px;width:100%;max-width:360px;box-shadow:0 25px 50px rgba(0,0,0,.25)}
+.login-logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#006B3F,#00A86B);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 20px;box-shadow:0 4px 12px rgba(0,107,63,.3)}
+.login-title{font-size:20px;font-weight:800;text-align:center;margin-bottom:4px;color:var(--gray-900)}
+.login-sub{font-size:13px;color:var(--text2);text-align:center;margin-bottom:28px}
+.login-input{width:100%;padding:14px 16px;border-radius:10px;border:2px solid var(--gray-200);background:var(--gray-50);color:var(--text);font-size:15px;font-weight:500;outline:none;transition:all .2s;margin-bottom:12px}
+.login-input:focus{border-color:var(--green);background:#fff;box-shadow:0 0 0 3px rgba(0,107,63,.1)}
+.login-btn{width:100%;padding:14px;border-radius:10px;border:none;background:linear-gradient(135deg,#006B3F,#00875A);color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 2px 8px rgba(0,107,63,.3)}
+.login-btn:active{transform:scale(.98);opacity:.9}
+.login-error{color:var(--red);font-size:13px;text-align:center;margin-top:8px;min-height:20px}
+
+/* ===== Layout ===== */
+.app{display:none;min-height:100vh}
+.app.show{display:flex}
+.sidebar{width:240px;background:#fff;border-right:1px solid var(--gray-200);position:fixed;top:0;left:0;bottom:0;z-index:100;display:flex;flex-direction:column;transition:transform .3s}
+.sidebar-header{padding:20px;border-bottom:1px solid var(--gray-100)}
+.sidebar-brand{display:flex;align-items:center;gap:10px}
+.sidebar-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#006B3F,#00A86B);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.sidebar-title{font-size:15px;font-weight:800;color:var(--gray-900);line-height:1.2}
+.sidebar-subtitle{font-size:11px;color:var(--text3);font-weight:500}
+.sidebar-nav{flex:1;padding:12px;overflow-y:auto}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;font-size:14px;font-weight:600;color:var(--gray-600);cursor:pointer;transition:all .15s;margin-bottom:2px}
+.nav-item:hover{background:var(--gray-50);color:var(--gray-900)}
+.nav-item.active{background:var(--green-light);color:var(--green)}
+.nav-item .nav-icon{width:20px;text-align:center;font-size:15px}
+.sidebar-footer{padding:16px;border-top:1px solid var(--gray-100)}
+.refresh-info{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text3);margin-bottom:10px}
+.refresh-dot{width:6px;height:6px;border-radius:50%;background:#22C55E;flex-shrink:0}
+.refresh-dot.syncing{background:var(--orange);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.logout-btn{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;font-size:13px;color:var(--text2);cursor:pointer;transition:all .15s;border:none;background:none;width:100%;text-align:left}
+.logout-btn:hover{background:var(--red-light);color:var(--red)}
+
+.main{flex:1;margin-left:240px;min-height:100vh}
+.main-header{background:#fff;border-bottom:1px solid var(--gray-200);padding:16px 28px;position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between}
+.main-title{font-size:18px;font-weight:800;color:var(--gray-900)}
+.main-subtitle{font-size:12px;color:var(--text3);margin-top:2px}
+.header-actions{display:flex;align-items:center;gap:8px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s}
+.btn-primary{background:var(--green);color:#fff;box-shadow:0 1px 3px rgba(0,107,63,.2)}
+.btn-primary:hover{background:var(--green-dark)}
+.btn-outline{background:#fff;color:var(--gray-700);border:1px solid var(--gray-200)}
+.btn-outline:hover{background:var(--gray-50)}
+.btn-sm{padding:6px 12px;font-size:12px}
+.main-content{padding:24px 28px}
+
+/* ===== Cards ===== */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.stat-card{background:#fff;border-radius:var(--radius-lg);padding:20px;box-shadow:var(--shadow-sm);border:1px solid var(--gray-100);position:relative;overflow:hidden}
+.stat-card::after{content:'';position:absolute;top:0;right:0;width:80px;height:80px;border-radius:50%;opacity:.06;transform:translate(20px,-20px)}
+.stat-card.green::after{background:var(--green)}
+.stat-card.blue::after{background:var(--blue)}
+.stat-card.orange::after{background:var(--orange)}
+.stat-card.purple::after{background:var(--purple)}
+.stat-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:12px}
+.stat-icon.green{background:var(--green-light);color:var(--green)}
+.stat-icon.blue{background:var(--blue-light);color:var(--blue)}
+.stat-icon.orange{background:var(--orange-light);color:var(--orange)}
+.stat-icon.purple{background:var(--purple-light);color:var(--purple)}
+.stat-value{font-size:28px;font-weight:800;line-height:1;margin-bottom:4px}
+.stat-value.green{color:var(--green)}
+.stat-value.blue{color:var(--blue)}
+.stat-value.orange{color:var(--orange)}
+.stat-value.purple{color:var(--purple)}
+.stat-label{font-size:13px;color:var(--text2);font-weight:500}
+.stat-change{font-size:11px;font-weight:600;margin-top:6px;display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px}
+.stat-change.up{background:var(--green-light);color:var(--green)}
+.stat-change.down{background:var(--red-light);color:var(--red)}
+
+.card{background:#fff;border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);border:1px solid var(--gray-100);margin-bottom:20px;overflow:hidden}
+.card-header{padding:16px 20px;border-bottom:1px solid var(--gray-100);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
+.card-body{padding:0}
+.card-body.padded{padding:20px}
+
+/* ===== Table ===== */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead{background:var(--gray-50)}
+th{padding:10px 16px;text-align:left;font-weight:600;color:var(--gray-500);font-size:11px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;border-bottom:1px solid var(--gray-200)}
+td{padding:12px 16px;border-bottom:1px solid var(--gray-100);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--gray-50)}
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.badge-green{background:var(--green-light);color:var(--green)}
+.badge-blue{background:var(--blue-light);color:var(--blue)}
+.badge-purple{background:var(--purple-light);color:var(--purple)}
+.badge-gray{background:var(--gray-100);color:var(--gray-500)}
+.badge-orange{background:var(--orange-light);color:var(--orange)}
+
+/* ===== User Cards ===== */
+.user-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;padding:16px 20px}
+.user-card{display:flex;align-items:center;gap:14px;padding:16px;border-radius:var(--radius);border:1px solid var(--gray-100);cursor:pointer;transition:all .2s}
+.user-card:hover{border-color:var(--green);box-shadow:0 2px 8px rgba(0,107,63,.1);transform:translateY(-1px)}
+.user-avatar{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#006B3F,#00A86B);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0}
+.user-info{flex:1;min-width:0}
+.user-name{font-size:15px;font-weight:700;color:var(--gray-900)}
+.user-meta{font-size:12px;color:var(--text2);margin-top:2px}
+.user-stats{display:flex;gap:16px;text-align:right}
+.user-stat-val{font-size:16px;font-weight:800;color:var(--green)}
+.user-stat-label{font-size:10px;color:var(--text3);font-weight:500}
+
+/* ===== Detail ===== */
+.detail-header{display:flex;align-items:center;gap:16px;padding:20px;border-bottom:1px solid var(--gray-100)}
+.detail-avatar{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#006B3F,#00A86B);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;flex-shrink:0}
+.detail-name{font-size:20px;font-weight:800;color:var(--gray-900)}
+.detail-meta{font-size:13px;color:var(--text2);margin-top:2px}
+.back-btn{display:inline-flex;align-items:center;gap:4px;font-size:13px;color:var(--blue);cursor:pointer;font-weight:600;padding:4px 0;margin-bottom:12px;border:none;background:none}
+.back-btn:hover{color:var(--blue);text-decoration:underline}
+
+/* ===== Filter Bar ===== */
+.filter-bar{display:flex;align-items:center;gap:8px;padding:12px 20px;border-bottom:1px solid var(--gray-100);flex-wrap:wrap}
+.filter-chip{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;background:var(--gray-100);color:var(--gray-600);cursor:pointer;border:none;transition:all .15s}
+.filter-chip:hover{background:var(--gray-200)}
+.filter-chip.active{background:var(--green);color:#fff}
+
+/* ===== Month Card ===== */
+.month-row{display:flex;align-items:center;gap:16px;padding:14px 20px;border-bottom:1px solid var(--gray-100);transition:background .15s}
+.month-row:last-child{border-bottom:none}
+.month-row:hover{background:var(--gray-50)}
+.month-label{font-size:14px;font-weight:700;color:var(--gray-900);min-width:90px}
+.month-bar-wrap{flex:1;height:8px;background:var(--gray-100);border-radius:4px;overflow:hidden}
+.month-bar{height:100%;border-radius:4px;background:linear-gradient(90deg,#006B3F,#00A86B);transition:width .6s ease}
+.month-stats{display:flex;gap:16px;text-align:right;min-width:120px}
+.month-val{font-size:14px;font-weight:700;color:var(--gray-900)}
+.month-sub{font-size:11px;color:var(--text3)}
+
+/* ===== Empty / Loading ===== */
+.empty-state{text-align:center;padding:48px 24px;color:var(--text2)}
+.empty-icon{font-size:48px;margin-bottom:12px;opacity:.5}
+.empty-text{font-size:14px;font-weight:500}
+.loading-state{display:flex;align-items:center;justify-content:center;padding:48px;gap:8px;color:var(--text2);font-size:14px}
+.spinner{width:18px;height:18px;border:2px solid var(--gray-200);border-top-color:var(--green);border-radius:50%;animation:spin .6s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.toast{position:fixed;top:calc(var(--safe-top) + 12px);left:50%;transform:translateX(-50%) translateY(-100px);background:var(--text);color:#fff;padding:10px 20px;border-radius:12px;font-size:14px;font-weight:600;z-index:9999;transition:transform .3s ease;pointer-events:none}
-.toast.show{transform:translateX(-50%) translateY(0)}
-.detail-header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
-.detail-avatar{width:48px;height:48px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700}
-.detail-name{font-size:20px;font-weight:800}
-.detail-title{font-size:13px;color:var(--text2)}
-.month-filter{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px}
-.month-chip{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;background:var(--card2);color:var(--text2);cursor:pointer;white-space:nowrap;border:none}
-.month-chip.active{background:var(--green);color:#fff}
+
+/* ===== Toast ===== */
+.toast{position:fixed;top:20px;right:20px;background:var(--gray-900);color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;transform:translateY(-100px);transition:transform .3s ease;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:8px}
+.toast.show{transform:translateY(0)}
+.toast.success{background:var(--green)}
+.toast.error{background:var(--red)}
+
+/* ===== Mobile ===== */
+.mobile-header{display:none;position:fixed;top:0;left:0;right:0;z-index:110;background:#fff;border-bottom:1px solid var(--gray-200);padding:12px 16px;align-items:center;justify-content:space-between}
+.mobile-menu-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--gray-200);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99}
+.sidebar-overlay.show{display:block}
+
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);z-index:200}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .main-header{padding:12px 16px;padding-top:calc(var(--safe-top) + 12px)}
+  .main-content{padding:16px}
+  .stats-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .stat-card{padding:14px}
+  .stat-value{font-size:22px}
+  .user-grid{grid-template-columns:1fr}
+  .mobile-header{display:flex}
+  .main-header{display:none}
+}
 </style>
 </head>
 <body>
 
+<!-- Login -->
 <div id="login-page" class="login-page">
-  <div class="login-logo">🏥</div>
-  <div class="login-title">管理后台</div>
-  <div class="login-sub">广东省中医院 · 放射科工作站</div>
-  <div class="login-form">
-    <input class="login-input" id="admin-pwd" type="password" placeholder="输入管理员密码">
-    <button class="login-btn" onclick="doLogin()">登录</button>
-    <div class="login-error" id="login-error"></div>
+  <div class="login-card">
+    <div class="login-logo">🏥</div>
+    <div class="login-title">管理后台</div>
+    <div class="login-sub">广东省中医院 · 放射科床边工作站</div>
+    <div class="login-form">
+      <input class="login-input" id="admin-pwd" type="password" placeholder="输入管理员密码" onkeydown="if(event.key==='Enter')doLogin()">
+      <button class="login-btn" onclick="doLogin()">登 录</button>
+      <div class="login-error" id="login-error"></div>
+    </div>
   </div>
 </div>
 
-<div id="app" style="display:none">
-  <div class="header">
-    <div class="header-top">
-      <h1>📊 管理后台</h1>
-      <span class="header-badge">管理员</span>
-    </div>
-    <div class="header-sub" id="header-sub">加载中...</div>
-  </div>
-  <div class="container" id="content"></div>
+<!-- Mobile Header -->
+<div class="mobile-header" id="mobile-header" style="display:none">
+  <div class="mobile-menu-btn" onclick="toggleSidebar()">☰</div>
+  <div style="font-size:15px;font-weight:800">📊 管理后台</div>
+  <div style="width:36px"></div>
 </div>
+
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+<!-- App -->
+<div class="app" id="app">
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-brand">
+        <div class="sidebar-icon">🏥</div>
+        <div>
+          <div class="sidebar-title">管理后台</div>
+          <div class="sidebar-subtitle">放射科床边工作站</div>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-item active" data-view="dashboard" onclick="switchView('dashboard')">
+        <span class="nav-icon">📊</span>数据总览
+      </div>
+      <div class="nav-item" data-view="users" onclick="switchView('users')">
+        <span class="nav-icon">👥</span>技师管理
+      </div>
+      <div class="nav-item" data-view="records" onclick="switchView('records')">
+        <span class="nav-icon">📋</span>工作记录
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      <div class="refresh-info">
+        <span class="refresh-dot" id="refresh-dot"></span>
+        <span id="refresh-text">每30秒自动刷新</span>
+      </div>
+      <button class="logout-btn" onclick="doLogout()">🚪 退出登录</button>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="main-header">
+      <div>
+        <div class="main-title" id="page-title">数据总览</div>
+        <div class="main-subtitle" id="page-subtitle">实时数据监控</div>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-outline btn-sm" onclick="manualRefresh()">🔄 刷新</button>
+        <span style="font-size:12px;color:var(--text3)" id="last-update"></span>
+      </div>
+    </div>
+    <div class="main-content" id="content">
+      <div class="loading-state"><div class="spinner"></div>加载中...</div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
 
 <script>
 var SB_URL = "https://uzcijftcckvyfirlhtci.supabase.co";
 var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV6Y2lqZnRjY2t2eWZpcmxodGNpIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3Njc5MTg3NCwiZXhwIjoyMDkyMzY3ODc0fQ.63bb31Bzm74EPJMQeeXKvtrezumCNotKb0G_7KFw8qU";
 var ADMIN_PWD = "lyon0915";
-// REST API mode, no SDK
-var currentView = 'users';
+var REFRESH_INTERVAL = 30000;
+
+var currentView = 'dashboard';
 var selectedUser = null;
 var allUsers = [];
 var allLogs = [];
+var refreshTimer = null;
+var isLoading = false;
 
+// ===== Init =====
 function init() {
   if (sessionStorage.getItem('admin_auth') === '1') {
-    showApp();
+    enterApp();
   }
 }
 
@@ -111,218 +291,356 @@ function doLogin() {
   var pwd = document.getElementById('admin-pwd').value;
   if (pwd === ADMIN_PWD) {
     sessionStorage.setItem('admin_auth', '1');
-    showApp();
+    enterApp();
   } else {
-    document.getElementById('login-error').textContent = '密码错误';
+    document.getElementById('login-error').textContent = '密码错误，请重试';
+    document.getElementById('admin-pwd').value = '';
   }
 }
 
 function doLogout() {
   sessionStorage.removeItem('admin_auth');
-  document.getElementById('app').style.display = 'none';
+  clearInterval(refreshTimer);
+  document.getElementById('app').classList.remove('show');
   document.getElementById('login-page').classList.remove('hide');
   document.getElementById('admin-pwd').value = '';
   document.getElementById('login-error').textContent = '';
 }
 
-async function showApp() {
+function enterApp() {
   document.getElementById('login-page').classList.add('hide');
-  document.getElementById('app').style.display = 'block';
-  await loadData();
+  document.getElementById('app').classList.add('show');
+  document.getElementById('mobile-header').style.display = '';
+  loadData();
+  refreshTimer = setInterval(loadData, REFRESH_INTERVAL);
 }
 
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('show');
+}
+
+// ===== Navigation =====
+function switchView(view) {
+  currentView = view;
+  selectedUser = null;
+  document.querySelectorAll('.nav-item').forEach(function(el) {
+    el.classList.toggle('active', el.dataset.view === view);
+  });
+  var titles = { dashboard: ['数据总览', '实时数据监控'], users: ['技师管理', '查看所有注册技师'], records: ['工作记录', '全部工作日志'] };
+  document.getElementById('page-title').textContent = titles[view][0];
+  document.getElementById('page-subtitle').textContent = titles[view][1];
+  renderView();
+  // Close mobile sidebar
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('show');
+}
+
+// ===== Data =====
 async function loadData() {
-  var content = document.getElementById('content');
-  content.innerHTML = '<div class="loading">正在加载数据</div>';
+  if (isLoading) return;
+  isLoading = true;
+  var dot = document.getElementById('refresh-dot');
+  dot.classList.add('syncing');
+  document.getElementById('refresh-text').textContent = '同步中...';
+
   try {
-    // Fetch all profiles
-    var pRes = await fetch(SB_URL+'/rest/v1/profiles?select=*&order=created_at.desc',{
-      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
-    });
-    if(!pRes.ok) throw new Error('profiles fetch failed: '+pRes.status);
-    var profiles = await pRes.json();
+    var [pRes, lRes] = await Promise.all([
+      fetch(SB_URL + '/rest/v1/profiles?select=*&order=created_at.desc', {
+        headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+      }),
+      fetch(SB_URL + '/rest/v1/daily_logs?select=*&order=date.desc', {
+        headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+      })
+    ]);
+    if (!pRes.ok || !lRes.ok) throw new Error('数据加载失败');
+    allUsers = await pRes.json() || [];
+    allLogs = await lRes.json() || [];
 
-    // Fetch all daily_logs
-    var lRes = await fetch(SB_URL+'/rest/v1/daily_logs?select=*&order=date.desc',{
-      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
-    });
-    if(!lRes.ok) throw new Error('logs fetch failed: '+lRes.status);
-    var logs = await lRes.json();
+    var now = new Date();
+    document.getElementById('last-update').textContent =
+      '更新于 ' + pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
 
-    allUsers = profiles || [];
-    allLogs = logs || [];
-
-    // Calculate totals
-    var totalUsers = allUsers.length;
-    var totalDays = allLogs.length;
-    var totalCount = 0;
-    var totalIncome = 0;
-    var todayStr = new Date().toISOString().slice(0, 10);
-    var todayActive = 0;
-
-    allLogs.forEach(function(log) {
-      totalCount += log.count || 0;
-      totalIncome += (log.count || 0) * (log.tax_mode ? 16 : 20);
-      if (log.date === todayStr) todayActive++;
-    });
-
-    // Count unique users active today
-    var todayUserIds = {};
-    allLogs.forEach(function(log) {
-      if (log.date === todayStr) todayUserIds[log.user_id] = true;
-    });
-    todayActive = Object.keys(todayUserIds).length;
-
-    document.getElementById('header-sub').textContent =
-      totalUsers + ' 名技师 · 今日 ' + todayActive + ' 人活跃';
-
-    if (currentView === 'users') {
-      renderUsers(totalCount, totalIncome, totalDays);
-    } else if (currentView === 'detail' && selectedUser) {
-      renderUserDetail(selectedUser);
-    }
+    renderView();
   } catch (e) {
-    content.innerHTML = '<div class="empty"><div class="empty-icon">⚠️</div><div>加载失败: ' + e.message + '</div></div>';
+    showToast('加载失败: ' + e.message, 'error');
   }
+
+  isLoading = false;
+  dot.classList.remove('syncing');
+  document.getElementById('refresh-text').textContent = '每30秒自动刷新';
 }
 
-function renderUsers(totalCount, totalIncome, totalDays) {
+function manualRefresh() {
+  loadData();
+  showToast('数据已刷新', 'success');
+}
+
+function renderView() {
+  if (currentView === 'dashboard') renderDashboard();
+  else if (currentView === 'users') renderUsers();
+  else if (currentView === 'records') renderRecords();
+  else if (currentView === 'detail') renderUserDetail();
+}
+
+// ===== Helpers =====
+function getUserById(id) { return allUsers.find(function(u) { return u.id === id; }); }
+function getUserLogs(uid) { return allLogs.filter(function(l) { return l.user_id === uid; }); }
+function getIncome(count, taxMode) { return (count || 0) * (taxMode ? 16 : 20); }
+function todayStr() { return new Date().toISOString().slice(0, 10); }
+function pad(n) { return n < 10 ? '0' + n : '' + n; }
+function esc(s) { if (!s) return ''; var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+function calcUserStats(uid) {
+  var logs = getUserLogs(uid);
+  var count = 0, income = 0, bedsideDays = 0, totalDays = 0;
+  logs.forEach(function(l) {
+    count += l.count || 0;
+    income += getIncome(l.count, l.tax_mode);
+    if (l.shift === 'bedside') bedsideDays++;
+    totalDays++;
+  });
+  return { count: count, income: income, bedsideDays: bedsideDays, totalDays: totalDays, logs: logs };
+}
+
+function shiftBadge(shift) {
+  var m = { bedside: ['床边', 'green'], night: ['夜班', 'purple'], normal: ['正常', 'blue'], rest: ['休息', 'gray'] };
+  var s = m[shift] || ['未知', 'gray'];
+  return '<span class="badge badge-' + s[1] + '">' + s[0] + '</span>';
+}
+
+// ===== Dashboard =====
+function renderDashboard() {
+  var today = todayStr();
+  var todayLogs = allLogs.filter(function(l) { return l.date === today; });
+  var todayUserIds = {};
+  todayLogs.forEach(function(l) { todayUserIds[l.user_id] = true; });
+  var todayActive = Object.keys(todayUserIds).length;
+  var todayCount = 0, todayIncome = 0;
+  todayLogs.forEach(function(l) { todayCount += l.count || 0; todayIncome += getIncome(l.count, l.tax_mode); });
+
+  var totalCount = 0, totalIncome = 0;
+  allLogs.forEach(function(l) { totalCount += l.count || 0; totalIncome += getIncome(l.count, l.tax_mode); });
+
+  // This month
+  var monthStr = today.slice(0, 7);
+  var monthLogs = allLogs.filter(function(l) { return l.date.startsWith(monthStr); });
+  var monthCount = 0, monthIncome = 0;
+  monthLogs.forEach(function(l) { monthCount += l.count || 0; monthIncome += getIncome(l.count, l.tax_mode); });
+
   var h = '';
-  // Overview stats
-  h += '<div class="stat-grid">';
-  h += '<div class="stat-item"><div class="stat-value" style="color:var(--green)">' + allUsers.length + '</div><div class="stat-label">注册技师</div></div>';
-  h += '<div class="stat-item"><div class="stat-value" style="color:var(--blue)">' + totalCount + '</div><div class="stat-label">总床边数</div></div>';
-  h += '<div class="stat-item"><div class="stat-value" style="color:var(--orange)">¥' + totalIncome + '</div><div class="stat-label">总收入</div></div>';
-  h += '<div class="stat-item"><div class="stat-value" style="color:var(--purple)">' + totalDays + '</div><div class="stat-label">工作日志</div></div>';
+  // Stats
+  h += '<div class="stats-grid">';
+  h += '<div class="stat-card green"><div class="stat-icon green">👥</div><div class="stat-value green">' + allUsers.length + '</div><div class="stat-label">注册技师</div></div>';
+  h += '<div class="stat-card blue"><div class="stat-icon blue">📋</div><div class="stat-value blue">' + todayCount + '</div><div class="stat-label">今日床边数</div><div class="stat-change up">' + todayActive + ' 人活跃</div></div>';
+  h += '<div class="stat-card orange"><div class="stat-icon orange">💰</div><div class="stat-value orange">¥' + monthIncome + '</div><div class="stat-label">本月收入</div><div class="stat-change up">' + monthCount + ' 单</div></div>';
+  h += '<div class="stat-card purple"><div class="stat-icon purple">📊</div><div class="stat-value purple">' + totalCount + '</div><div class="stat-label">累计床边数</div><div class="stat-change up">¥' + totalIncome + '</div></div>';
   h += '</div>';
 
-  // User list
-  h += '<div class="card"><div class="card-title">👥 技师列表</div>';
-  if (!allUsers.length) {
-    h += '<div class="empty"><div class="empty-icon">📭</div><div>暂无注册技师</div></div>';
+  // Today's activity
+  h += '<div class="card"><div class="card-header"><div class="card-title">📌 今日动态</div><span style="font-size:12px;color:var(--text3)">' + today + '</span></div>';
+  if (todayLogs.length === 0) {
+    h += '<div class="empty-state"><div class="empty-icon">😴</div><div class="empty-text">今天还没有工作记录</div></div>';
   } else {
+    h += '<div class="table-wrap"><table><thead><tr><th>技师</th><th>班次</th><th>床边数</th><th>收入</th></tr></thead><tbody>';
+    todayLogs.forEach(function(log) {
+      var user = getUserById(log.user_id);
+      var name = user ? user.name : '未知用户';
+      h += '<tr><td><strong>' + esc(name) + '</strong></td><td>' + shiftBadge(log.shift) + '</td><td>' + (log.count || 0) + '</td><td>¥' + getIncome(log.count, log.tax_mode) + '</td></tr>';
+    });
+    h += '</tbody></table></div>';
+  }
+  h += '</div>';
+
+  // Top users
+  h += '<div class="card"><div class="card-header"><div class="card-title">🏆 技师排行（本月）</div></div>';
+  var userMonthStats = [];
+  allUsers.forEach(function(u) {
+    var stats = calcUserStats(u.id);
+    var mCount = 0;
+    stats.logs.forEach(function(l) { if (l.date.startsWith(monthStr)) mCount += l.count || 0; });
+    userMonthStats.push({ user: u, monthCount: mCount, total: stats.count });
+  });
+  userMonthStats.sort(function(a, b) { return b.monthCount - a.monthCount; });
+  var maxCount = userMonthStats.length > 0 ? userMonthStats[0].monthCount : 1;
+
+  h += '<div class="card-body">';
+  userMonthStats.forEach(function(item, idx) {
+    var pct = maxCount > 0 ? Math.round(item.monthCount / maxCount * 100) : 0;
+    var medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : (idx + 1) + '.';
+    h += '<div class="month-row">';
+    h += '<div style="min-width:32px;text-align:center;font-size:16px">' + medal + '</div>';
+    h += '<div style="min-width:60px"><div style="font-size:14px;font-weight:700">' + esc(item.user.name) + '</div></div>';
+    h += '<div class="month-bar-wrap"><div class="month-bar" style="width:' + pct + '%"></div></div>';
+    h += '<div class="month-stats"><div class="month-val">' + item.monthCount + '</div><div class="month-sub">本月</div></div>';
+    h += '</div>';
+  });
+  h += '</div></div>';
+
+  document.getElementById('content').innerHTML = h;
+}
+
+// ===== Users =====
+function renderUsers() {
+  var h = '';
+  h += '<div class="card"><div class="card-header"><div class="card-title">👥 全部技师 (' + allUsers.length + ')</div></div>';
+  if (allUsers.length === 0) {
+    h += '<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">暂无注册技师</div></div>';
+  } else {
+    h += '<div class="user-grid">';
     allUsers.forEach(function(user) {
-      var userLogs = allLogs.filter(function(l) { return l.user_id === user.id; });
-      var uCount = 0, uIncome = 0, uDays = 0;
-      userLogs.forEach(function(l) {
-        uCount += l.count || 0;
-        uIncome += (l.count || 0) * (l.tax_mode ? 16 : 20);
-        if (l.shift === 'bedside') uDays++;
-      });
+      var stats = calcUserStats(user.id);
       var initial = (user.name || '?')[0];
       h += '<div class="user-card" onclick="viewUser(\'' + user.id + '\')">';
       h += '<div class="user-avatar">' + initial + '</div>';
       h += '<div class="user-info"><div class="user-name">' + esc(user.name) + '</div>';
-      h += '<div class="user-meta">' + esc(user.title || '技师') + ' · ' + uDays + '天床边班</div></div>';
-      h += '<div class="user-stats"><div class="user-count">' + uCount + '</div><div class="user-income">¥' + uIncome + '</div></div>';
+      h += '<div class="user-meta">' + esc(user.title || '技师') + ' · ' + stats.bedsideDays + '天床边班</div></div>';
+      h += '<div class="user-stats"><div><div class="user-stat-val">' + stats.count + '</div><div class="user-stat-label">床边</div></div>';
+      h += '<div><div class="user-stat-val" style="color:var(--orange)">¥' + stats.income + '</div><div class="user-stat-label">收入</div></div></div>';
       h += '</div>';
     });
+    h += '</div>';
   }
   h += '</div>';
-
-  // Recent logs
-  h += '<div class="card"><div class="card-title">📋 最近工作记录</div>';
-  if (!allLogs.length) {
-    h += '<div class="empty"><div class="empty-icon">📭</div><div>暂无记录</div></div>';
-  } else {
-    h += '<div class="table-wrap"><table>';
-    h += '<tr><th>技师</th><th>日期</th><th>班次</th><th>床边</th><th>收入</th></tr>';
-    allLogs.slice(0, 30).forEach(function(log) {
-      var user = allUsers.find(function(u) { return u.id === log.user_id; });
-      var name = user ? user.name : '未知';
-      var shiftBadge = { bedside: '<span class="badge badge-green">床边</span>', night: '<span class="badge badge-purple">夜班</span>', normal: '<span class="badge badge-blue">正常</span>', rest: '<span class="badge badge-gray">休息</span>' };
-      var income = (log.count || 0) * (log.tax_mode ? 16 : 20);
-      h += '<tr><td>' + esc(name) + '</td><td>' + log.date + '</td><td>' + (shiftBadge[log.shift] || '') + '</td><td>' + (log.count || 0) + '</td><td>¥' + income + '</td></tr>';
-    });
-    h += '</table></div>';
-  }
-  h += '</div>';
-
-  // Logout
-  h += '<div style="text-align:center;padding:20px"><span style="color:var(--text3);font-size:13px;cursor:pointer" onclick="doLogout()">🚪 退出管理后台</span></div>';
-
   document.getElementById('content').innerHTML = h;
 }
 
 function viewUser(userId) {
   selectedUser = userId;
   currentView = 'detail';
-  renderUserDetail(userId);
+  var user = getUserById(userId);
+  document.getElementById('page-title').textContent = user ? user.name : '技师详情';
+  document.getElementById('page-subtitle').textContent = '个人数据详情';
+  renderUserDetail();
 }
 
-function renderUserDetail(userId) {
-  var user = allUsers.find(function(u) { return u.id === userId; });
-  if (!user) return;
-  var userLogs = allLogs.filter(function(l) { return l.user_id === userId; });
-  var uCount = 0, uIncome = 0, uDays = 0;
-  userLogs.forEach(function(l) {
-    uCount += l.count || 0;
-    uIncome += (l.count || 0) * (l.tax_mode ? 16 : 20);
-    if (l.shift === 'bedside') uDays++;
-  });
+// ===== User Detail =====
+function renderUserDetail() {
+  var user = getUserById(selectedUser);
+  if (!user) { switchView('users'); return; }
+  var stats = calcUserStats(user.id);
+  var initial = (user.name || '?')[0];
 
-  var h = '<div class="back-btn" onclick="currentView=\'users\';loadData()">‹ 返回列表</div>';
-  h += '<div class="card">';
-  h += '<div class="detail-header"><div class="detail-avatar">' + (user.name || '?')[0] + '</div>';
+  var h = '<button class="back-btn" onclick="switchView(\'users\')">‹ 返回技师列表</button>';
+
+  // Header card
+  h += '<div class="card"><div class="detail-header">';
+  h += '<div class="detail-avatar">' + initial + '</div>';
   h += '<div><div class="detail-name">' + esc(user.name) + '</div>';
-  h += '<div class="detail-title">' + esc(user.title || '技师') + ' · 注册于 ' + (user.created_at || '').slice(0, 10) + '</div></div></div>';
-  h += '<div class="stat-grid">';
-  h += '<div class="stat-item"><div class="stat-value" style="color:var(--green)">' + uCount + '</div><div class="stat-label">总床边</div></div>';
-  h += '<div class="stat-item"><div class="stat-value" style="color:var(--orange)">¥' + uIncome + '</div><div class="stat-label">总收入</div></div>';
-  h += '<div class="stat-item"><div class="stat-value" style="color:var(--blue)">' + uDays + '</div><div class="stat-label">床边班天数</div></div>';
-  h += '<div class="stat-item"><div class="stat-value" style="color:var(--purple)">' + userLogs.length + '</div><div class="stat-label">工作日志</div></div>';
-  h += '</div></div>';
+  h += '<div class="detail-meta">' + esc(user.title || '技师') + ' · 注册于 ' + (user.created_at || '').slice(0, 10) + '</div></div></div>';
+  h += '<div style="padding:0 20px 16px"><div class="stats-grid" style="grid-template-columns:repeat(3,1fr);gap:10px">';
+  h += '<div class="stat-card green" style="padding:14px"><div class="stat-value green" style="font-size:22px">' + stats.count + '</div><div class="stat-label">总床边数</div></div>';
+  h += '<div class="stat-card orange" style="padding:14px"><div class="stat-value orange" style="font-size:22px">¥' + stats.income + '</div><div class="stat-label">总收入</div></div>';
+  h += '<div class="stat-card blue" style="padding:14px"><div class="stat-value blue" style="font-size:22px">' + stats.bedsideDays + '</div><div class="stat-label">床边班天数</div></div>';
+  h += '</div></div></div>';
 
   // Monthly breakdown
   var monthMap = {};
-  userLogs.forEach(function(l) {
+  stats.logs.forEach(function(l) {
     var mk = l.date.slice(0, 7);
     if (!monthMap[mk]) monthMap[mk] = { count: 0, income: 0, days: 0 };
     monthMap[mk].count += l.count || 0;
-    monthMap[mk].income += (l.count || 0) * (l.tax_mode ? 16 : 20);
+    monthMap[mk].income += getIncome(l.count, l.tax_mode);
     if (l.shift === 'bedside') monthMap[mk].days++;
   });
   var months = Object.keys(monthMap).sort().reverse();
+  var maxMonth = months.length > 0 ? monthMap[months[0]].count : 1;
 
-  h += '<div class="card"><div class="card-title">📅 月度统计</div>';
-  if (!months.length) {
-    h += '<div class="empty">暂无数据</div>';
+  h += '<div class="card"><div class="card-header"><div class="card-title">📅 月度统计</div></div><div class="card-body">';
+  if (months.length === 0) {
+    h += '<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">暂无数据</div></div>';
   } else {
     months.forEach(function(mk) {
       var m = monthMap[mk];
-      h += '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">';
-      h += '<div style="flex:1"><div style="font-size:14px;font-weight:700">' + mk + '</div>';
-      h += '<div style="font-size:11px;color:var(--text2)">' + m.days + '天床边班</div></div>';
-      h += '<div style="text-align:right"><div style="font-size:16px;font-weight:800;color:var(--green)">' + m.count + '</div>';
-      h += '<div style="font-size:11px;color:var(--text2)">¥' + m.income + '</div></div></div>';
+      var pct = maxMonth > 0 ? Math.round(m.count / maxMonth * 100) : 0;
+      h += '<div class="month-row">';
+      h += '<div class="month-label">' + mk + '</div>';
+      h += '<div class="month-bar-wrap"><div class="month-bar" style="width:' + pct + '%"></div></div>';
+      h += '<div class="month-stats"><div class="month-val">' + m.count + '</div><div class="month-sub">' + m.days + '天 · ¥' + m.income + '</div></div>';
+      h += '</div>';
     });
   }
-  h += '</div>';
+  h += '</div></div>';
 
-  // Daily logs
-  h += '<div class="card"><div class="card-title">📋 每日记录</div>';
-  if (!userLogs.length) {
-    h += '<div class="empty">暂无记录</div>';
+  // Daily records
+  h += '<div class="card"><div class="card-header"><div class="card-title">📋 每日记录</div><span style="font-size:12px;color:var(--text3)">' + stats.logs.length + ' 条</span></div>';
+  if (stats.logs.length === 0) {
+    h += '<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">暂无记录</div></div>';
   } else {
-    h += '<div class="table-wrap"><table>';
-    h += '<tr><th>日期</th><th>班次</th><th>床边</th><th>收入</th></tr>';
-    userLogs.forEach(function(log) {
-      var shiftBadge = { bedside: '<span class="badge badge-green">床边</span>', night: '<span class="badge badge-purple">夜班</span>', normal: '<span class="badge badge-blue">正常</span>', rest: '<span class="badge badge-gray">休息</span>' };
-      var income = (log.count || 0) * (log.tax_mode ? 16 : 20);
-      h += '<tr><td>' + log.date + '</td><td>' + (shiftBadge[log.shift] || '') + '</td><td>' + (log.count || 0) + '</td><td>¥' + income + '</td></tr>';
+    h += '<div class="table-wrap"><table><thead><tr><th>日期</th><th>班次</th><th>床边数</th><th>收入</th></tr></thead><tbody>';
+    stats.logs.forEach(function(log) {
+      h += '<tr><td>' + log.date + '</td><td>' + shiftBadge(log.shift) + '</td><td>' + (log.count || 0) + '</td><td>¥' + getIncome(log.count, log.tax_mode) + '</td></tr>';
     });
-    h += '</table></div>';
+    h += '</tbody></table></div>';
   }
   h += '</div>';
 
   document.getElementById('content').innerHTML = h;
 }
 
-function esc(s) {
-  if (!s) return '';
-  var d = document.createElement('div');
-  d.textContent = s;
-  return d.innerHTML;
+// ===== Records =====
+var recordFilter = 'all';
+function renderRecords() {
+  var h = '';
+
+  // Filter bar
+  h += '<div class="card"><div class="filter-bar">';
+  var filters = [['all', '全部记录'], ['today', '今天'], ['week', '本周'], ['month', '本月']];
+  filters.forEach(function(f) {
+    h += '<button class="filter-chip' + (recordFilter === f[0] ? ' active' : '') + '" onclick="setRecordFilter(\'' + f[0] + '\')">' + f[1] + '</button>';
+  });
+  h += '</div>';
+
+  // Filtered logs
+  var filtered = allLogs;
+  var today = todayStr();
+  if (recordFilter === 'today') {
+    filtered = allLogs.filter(function(l) { return l.date === today; });
+  } else if (recordFilter === 'week') {
+    var weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
+    var weekStr = weekAgo.toISOString().slice(0, 10);
+    filtered = allLogs.filter(function(l) { return l.date >= weekStr; });
+  } else if (recordFilter === 'month') {
+    var monthStr = today.slice(0, 7);
+    filtered = allLogs.filter(function(l) { return l.date.startsWith(monthStr); });
+  }
+
+  // Summary
+  var fCount = 0, fIncome = 0;
+  filtered.forEach(function(l) { fCount += l.count || 0; fIncome += getIncome(l.count, l.tax_mode); });
+  h += '<div style="padding:12px 20px;display:flex;gap:20px;border-bottom:1px solid var(--gray-100)">';
+  h += '<div><span style="font-size:20px;font-weight:800;color:var(--green)">' + fCount + '</span> <span style="font-size:12px;color:var(--text2)">床边</span></div>';
+  h += '<div><span style="font-size:20px;font-weight:800;color:var(--orange)">¥' + fIncome + '</span> <span style="font-size:12px;color:var(--text2)">收入</span></div>';
+  h += '<div><span style="font-size:20px;font-weight:800;color:var(--blue)">' + filtered.length + '</span> <span style="font-size:12px;color:var(--text2)">条记录</span></div>';
+  h += '</div>';
+
+  if (filtered.length === 0) {
+    h += '<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">暂无记录</div></div>';
+  } else {
+    h += '<div class="table-wrap"><table><thead><tr><th>技师</th><th>日期</th><th>班次</th><th>床边数</th><th>收入</th></tr></thead><tbody>';
+    filtered.forEach(function(log) {
+      var user = getUserById(log.user_id);
+      var name = user ? user.name : '未知用户';
+      h += '<tr><td><strong>' + esc(name) + '</strong></td><td>' + log.date + '</td><td>' + shiftBadge(log.shift) + '</td><td>' + (log.count || 0) + '</td><td>¥' + getIncome(log.count, log.tax_mode) + '</td></tr>';
+    });
+    h += '</tbody></table></div>';
+  }
+  h += '</div>';
+
+  document.getElementById('content').innerHTML = h;
+}
+
+function setRecordFilter(f) {
+  recordFilter = f;
+  renderRecords();
+}
+
+// ===== Toast =====
+function showToast(msg, type) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast ' + (type || '') + ' show';
+  setTimeout(function() { el.classList.remove('show'); }, 2500);
 }
 
 init();
