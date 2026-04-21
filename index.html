@@ -256,6 +256,7 @@ tr:hover td{background:var(--gray-50)}
       </div>
       <div class="header-actions">
         <button class="btn btn-outline btn-sm" onclick="manualRefresh()">🔄 刷新</button>
+        <button class="btn btn-sm" style="background:var(--red);color:#fff" onclick="clearAllData()">🗑️ 清空全部</button>
         <span style="font-size:12px;color:var(--text3)" id="last-update"></span>
       </div>
     </div>
@@ -633,6 +634,34 @@ function renderRecords() {
 function setRecordFilter(f) {
   recordFilter = f;
   renderRecords();
+}
+
+// ===== Clear All =====
+async function clearAllData(){
+  if(!confirm('确定要清空全部技师和工作记录吗？\n此操作不可恢复！'))return;
+  if(!confirm('再次确认：真的要全部删除吗？'))return;
+  try{
+    var h1=await fetch(SB_URL+'/rest/v1/daily_logs?select=id',{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});
+    var logs=await h1.json();
+    if(logs.length>0){
+      var ids=logs.map(function(l){return l.id;});
+      for(var i=0;i<ids.length;i+=500){
+        var batch=ids.slice(i,i+500);
+        await fetch(SB_URL+'/rest/v1/daily_logs?id=in.('+batch.join(',')+')',{method:'DELETE',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});
+      }
+    }
+    var h2=await fetch(SB_URL+'/rest/v1/profiles?select=id',{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});
+    var profiles=await h2.json();
+    if(profiles.length>0){
+      var pids=profiles.map(function(p){return p.id;});
+      for(var i=0;i<pids.length;i+=500){
+        var batch=pids.slice(i,i+500);
+        await fetch(SB_URL+'/rest/v1/profiles?id=in.('+batch.join(',')+')',{method:'DELETE',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});
+      }
+    }
+    showToast('已清空全部数据','success');
+    loadData();
+  }catch(e){showToast('清空失败: '+e.message,'error');}
 }
 
 // ===== Toast =====
