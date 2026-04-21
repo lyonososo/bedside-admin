@@ -243,6 +243,7 @@ tr:hover td{background:var(--gray-50)}
         <span class="refresh-dot" id="refresh-dot"></span>
         <span id="refresh-text">每30秒自动刷新</span>
       </div>
+      <button class="logout-btn" style="color:var(--red);font-weight:700" onclick="clearAllData()">🗑️ 清空全部数据</button>
       <button class="logout-btn" onclick="doLogout()">🚪 退出登录</button>
     </div>
   </div>
@@ -256,8 +257,7 @@ tr:hover td{background:var(--gray-50)}
       </div>
       <div class="header-actions">
         <button class="btn btn-outline btn-sm" onclick="manualRefresh()">🔄 刷新</button>
-        <button class="btn btn-sm" style="background:var(--red);color:#fff" onclick="clearAllData()">🗑️ 清空全部</button>
-        <span style="font-size:12px;color:var(--text3)" id="last-update"></span>
+                <span style="font-size:12px;color:var(--text3)" id="last-update"></span>
       </div>
     </div>
     <div class="main-content" id="content">
