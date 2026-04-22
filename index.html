@@ -237,6 +237,9 @@ tr:hover td{background:var(--gray-50)}
       <div class="nav-item" data-view="records" onclick="switchView('records')">
         <span class="nav-icon">📋</span>工作记录
       </div>
+      <div style="padding:8px 12px">
+        <button class="btn btn-primary" style="width:100%;justify-content:center;padding:10px;font-size:14px;border-radius:10px" onclick="manualRefresh()" id="sidebar-refresh-btn">🔄 刷新数据</button>
+      </div>
     </div>
     <div class="sidebar-footer">
       <div class="refresh-info">
@@ -261,10 +264,7 @@ tr:hover td{background:var(--gray-50)}
       </div>
     </div>
     <div class="main-content" id="content">
-<div id="refresh-bar" style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;margin-bottom:8px">
-<div style="font-size:12px;color:var(--text3)" id="last-update-text">等待加载...</div>
-<button class="btn btn-primary btn-sm" onclick="manualRefresh()" style="min-width:100px">🔄 刷新数据</button>
-</div>
+
       <div class="loading-state"><div class="spinner"></div>加载中...</div>
     </div>
   </div>
@@ -275,7 +275,7 @@ tr:hover td{background:var(--gray-50)}
 <script>
 var SB_URL = "https://uzcijftcckvyfirlhtci.supabase.co";
 var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV6Y2lqZnRjY2t2eWZpcmxodGNpIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3Njc5MTg3NCwiZXhwIjoyMDkyMzY3ODc0fQ.63bb31Bzm74EPJMQeeXKvtrezumCNotKb0G_7KFw8qU";
-var ADMIN_PWD = "lyon0915";
+var ADMIN_PWD = "1";
 var REFRESH_INTERVAL = 30000;
 
 var currentView = 'dashboard';
@@ -380,8 +380,9 @@ async function loadData() {
 }
 
 function manualRefresh() {
-  var btn = document.querySelector('#refresh-bar button');
+  var btn = document.getElementById('sidebar-refresh-btn');
   if(btn){btn.textContent='⏳ 刷新中...';btn.disabled=true;}
+  allUsers=[];allLogs=[];
   loadData().then(function(){
     if(btn){btn.textContent='🔄 刷新数据';btn.disabled=false;}
     showToast('数据已刷新', 'success');
