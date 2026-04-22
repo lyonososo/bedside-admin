@@ -399,6 +399,7 @@ function renderView() {
 // ===== Helpers =====
 function getUserById(id) { return allUsers.find(function(u) { return u.id === id; }); }
 function getUserLogs(uid) { return allLogs.filter(function(l) { return l.user_id === uid; }); }
+function getUserExtra(user) { try { return user.avatar ? JSON.parse(user.avatar) : {}; } catch(e) { return {}; } }
 function getIncome(count, taxMode) { return (count || 0) * (taxMode ? 16 : 20); }
 function todayStr() { return new Date().toISOString().slice(0, 10); }
 function pad(n) { return n < 10 ? '0' + n : '' + n; }
@@ -504,10 +505,15 @@ function renderUsers() {
     allUsers.forEach(function(user) {
       var stats = calcUserStats(user.id);
       var initial = (user.name || '?')[0];
+      var uextra = getUserExtra(user);
       h += '<div class="user-card" onclick="viewUser(\'' + user.id + '\')">';
       h += '<div class="user-avatar">' + initial + '</div>';
       h += '<div class="user-info"><div class="user-name">' + esc(user.name) + '</div>';
-      h += '<div class="user-meta">' + esc(user.title || '技师') + ' · ' + stats.bedsideDays + '天床边班</div></div>';
+      var metaParts = [esc(user.title || '技师')];
+      if(uextra.height) metaParts.push(uextra.height+'cm');
+      if(uextra.weight) metaParts.push(uextra.weight+'kg');
+      metaParts.push(stats.bedsideDays + '天床边班');
+      h += '<div class="user-meta">' + metaParts.join(' · ') + '</div></div>';
       h += '<div class="user-stats"><div><div class="user-stat-val">' + stats.count + '</div><div class="user-stat-label">床边</div></div>';
       h += '<div><div class="user-stat-val" style="color:var(--orange)">¥' + stats.income + '</div><div class="user-stat-label">收入</div></div></div>';
       h += '</div>';
@@ -546,6 +552,54 @@ function renderUserDetail() {
   h += '<div class="stat-card orange" style="padding:14px"><div class="stat-value orange" style="font-size:22px">¥' + stats.income + '</div><div class="stat-label">总收入</div></div>';
   h += '<div class="stat-card blue" style="padding:14px"><div class="stat-value blue" style="font-size:22px">' + stats.bedsideDays + '</div><div class="stat-label">床边班天数</div></div>';
   h += '</div></div></div>';
+
+  // Extra user data (from avatar JSON)
+  var extra = getUserExtra(user);
+  var hasExtra = extra.height || extra.weight || (extra.notes && extra.notes.length) || extra.handover || (extra.favorites && extra.favorites.length) || (extra.contacts && extra.contacts.length);
+  if(hasExtra){
+    h += '<div class="card"><div class="card-header"><div class="card-title">👤 个人信息</div></div><div class="card-body">';
+    var infoItems = [];
+    if(extra.height) infoItems.push('<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text2)">身高</span><span>'+extra.height+' cm</span></div>');
+    if(extra.weight) infoItems.push('<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text2)">体重</span><span>'+extra.weight+' kg</span></div>');
+    if(extra.height && extra.weight){var bmi=(extra.weight/Math.pow(extra.height/100,2)).toFixed(1);infoItems.push('<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text2)">BMI</span><span>'+bmi+'</span></div>');}
+    if(extra.hospital) infoItems.push('<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text2)">医院</span><span>'+esc(extra.hospital)+'</span></div>');
+    if(extra.dept) infoItems.push('<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text2)">科室</span><span>'+esc(extra.dept)+'</span></div>');
+    if(infoItems.length) h += infoItems.join('');
+    else h += '<div class="empty-state"><div class="empty-text">暂无个人信息</div></div>';
+    h += '</div></div>';
+  }
+
+  // Notes
+  if(extra.notes && extra.notes.length){
+    h += '<div class="card"><div class="card-header"><div class="card-title">📝 小笔记 ('+extra.notes.length+')</div></div><div class="card-body">';
+    extra.notes.forEach(function(n){
+      h += '<div style="padding:10px 0;border-bottom:1px solid var(--border)"><div style="font-size:14px">'+esc(n.text)+'</div><div style="font-size:12px;color:var(--text3);margin-top:4px">'+esc(n.time||'')+'</div></div>';
+    });
+    h += '</div></div>';
+  }
+
+  // Handover
+  if(extra.handover){
+    h += '<div class="card"><div class="card-header"><div class="card-title">📋 交接备忘</div></div><div class="card-body"><div style="font-size:14px;line-height:1.6;white-space:pre-wrap">'+esc(extra.handover)+'</div></div></div>';
+  }
+
+  // Favorites
+  if(extra.favorites && extra.favorites.length){
+    h += '<div class="card"><div class="card-header"><div class="card-title">⭐ 收藏床位 ('+extra.favorites.length+')</div></div><div class="card-body"><div style="display:flex;flex-wrap:wrap;gap:6px">';
+    extra.favorites.forEach(function(f){ h += '<span style="background:var(--bg2);padding:4px 10px;border-radius:6px;font-size:13px">'+esc(f)+'</span>'; });
+    h += '</div></div></div>';
+  }
+
+  // Contacts
+  if(extra.contacts && extra.contacts.length){
+    h += '<div class="card"><div class="card-header"><div class="card-title">📞 常用联系人 ('+extra.contacts.length+')</div></div><div class="card-body">';
+    extra.contacts.forEach(function(c){
+      h += '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)"><div><span style="margin-right:6px">'+(c.icon||'📞')+'</span><span style="font-size:14px">'+esc(c.name)+'</span></div>';
+      if(c.phone) h += '<span style="font-size:13px;color:var(--text2)">'+esc(c.phone)+'</span>';
+      h += '</div>';
+    });
+    h += '</div></div>';
+  }
 
   // Monthly breakdown
   var monthMap = {};
